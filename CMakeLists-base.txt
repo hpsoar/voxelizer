@@ -1,0 +1,53 @@
+project(${proj_name})
+
+option(BUILD_SHARED
+  "On to build shared libraries, off for static libraries."
+  ON)
+
+option(BUILD_DEBUG
+  "On to build release version, off for debug version."
+  OFF)
+
+if (BUILD_SHARED)
+  add_definitions(-DBUILD_SHARED)
+  set(LIB_TYPE SHARED)
+else ()
+  set(LIB_TYPE STATIC)
+endif (BUILD_SHARED)
+
+# there should be no comma between the name and value
+set(lib_dir ${PROJECT_SOURCE_DIR}/lib)
+set(bin_dir ${PROJECT_SOURCE_DIR}/bin)
+set(work_dir ${PROJECT_SOURCE_DIR}/..)
+
+if (WIN32)
+  set(magic_dir D:)
+else ()
+  set(magic_dir /media/D)
+endif (WIN32)
+
+if (BUILD_DEBUG)
+  set(CMAKE_BUILD_TYPE "Debug")
+else ()
+  set(CMAKE_BUILD_TYPE "Release")
+endif (BUILD_DEBUG)
+
+if (MSVC)
+  foreach(OUTPUT_CONFIG ${CMAKE_CONFIGURATION_TYPES})
+    message(STATUS "OUTPUT_CONFIG=${OUTPUT_CONFIG}")
+    string(TOUPPER ${OUTPUT_CONFIG} OUTPUT_CONFIG)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUT_CONFIG} ${lib_dir})
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUT_CONFIG} ${lib_dir})
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUT_CONFIG} ${bin_dir})
+  endforeach(OUTPUT_CONFIG ${CMAKE_CONFIGURATION_TYPES})
+else ()
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${lib_dir})
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${lib_dir})
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${bin_dir})
+endif (MSVC)
+
+message(STATUS "BIN_DIR=${bin_dir}")
+message(STATUS "LIB_DIR=${lib_dir}")
+message(STATUS "WORK_DIR=${work_dir}")
+message(STATUS "LIB_TYPE = ${lib_type}")
+message(STATUS "MAGIC_DIR = ${magic_dir}")
