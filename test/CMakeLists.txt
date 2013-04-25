@@ -1,18 +1,27 @@
 set(VOXELIZER_TEST_SRC main.cu voxelizer_demo.cu voxelizer_test.cu)
 
-LINK_DIRECTORIES(${WORK_DIR}/voxelizer/lib
-                 ${WORK_DIR}/axle/lib
-                 ${MAGIC_DIR}/cudpp/lib)
+link_directories(${WORK_DIR}/voxelizer/lib
+                 ${WORK_DIR}/axle/lib)
 
 #LINK_LIBRARIES("-laxle ")
 set(CUDA_NVCC_FLAGS "-arch=sm_20")
 set(CMAKE_CXX_FLAGS "-DCHEETAH_DEBUG")
 if (WIN32)
-  set(LIB_LIST axle glu32 glut32 glew32 devil voxelizer cudpp32)
+  set(LIB_LIST glu32 glut32 glew32 devil)
 else ()
-  set(LIB_LIST axle GLU glut GLEW IL ILU voxelizer boost_thread cudpp)
+  set(LIB_LIST GLU glut GLEW IL ILU boost_thread)
 endif (WIN32)
 
-CUDA_ADD_EXECUTABLE(voxelizer_test ${VOXELIZER_TEST_SRC})
-TARGET_LINK_LIBRARIES(voxelizer_test ${LIB_LIST})
-message(STATUS "cuda path = ${CUDA_LIB_PATH}")
+set(target_name "test")
+
+CUDA_ADD_EXECUTABLE(${target_name} ${VOXELIZER_TEST_SRC})
+
+set(output "${target_name}/${target_name}")
+set(debug_output "${output}_d")
+
+set_target_properties(${target_name} PROPERTIES OUTPUT_NAME_DEBUG ${debug_output})
+set_target_properties(${target_name} PROPERTIES OUTPUT_NAME_RELEASE ${output})
+
+set(libs optimized axle optimized voxelizer debug axle_d debug voxelizer_d ${LIB_LIST})
+target_link_libraries(${target_name} ${libs})
+

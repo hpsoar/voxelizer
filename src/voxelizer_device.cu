@@ -1,5 +1,5 @@
 #include "voxel/voxelizer_device.h"
-#include "voxelizer_imp.cu"
+#include "voxelizer_imp.cuh"
 
 #ifdef VOXELIZER_DEVICE
 #include <device_launch_parameters.h>

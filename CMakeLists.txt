@@ -18,9 +18,8 @@ include_directories(${work_dir}/axle/include
                     ${NV_COMPUTE_SDK_ROOT}/shared/inc
                     ./include)
 
-link_directories(${work_dir}/axle/lib)
 find_package(CUDA REQUIRED)
 
 add_subdirectory(src ${LIB_DIR})
-add_subdirectory(voxelizer_test ${BIN_DIR})
+add_subdirectory(test ${BIN_DIR})
 

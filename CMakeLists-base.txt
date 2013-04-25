@@ -2,7 +2,7 @@ project(${proj_name})
 
 option(BUILD_SHARED
   "On to build shared libraries, off for static libraries."
-  ON)
+  OFF)
 
 option(BUILD_DEBUG
   "On to build release version, off for debug version."
@@ -51,3 +51,4 @@ message(STATUS "LIB_DIR=${lib_dir}")
 message(STATUS "WORK_DIR=${work_dir}")
 message(STATUS "LIB_TYPE = ${lib_type}")
 message(STATUS "MAGIC_DIR = ${magic_dir}")
+

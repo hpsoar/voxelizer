@@ -1,5 +1,5 @@
 #include "voxel/voxelizer_host.h"
-#include "voxelizer_imp.cu"
+#include "voxelizer_imp.cuh"
 
 #ifdef VOXELIZER_HOST
 namespace voxel {
