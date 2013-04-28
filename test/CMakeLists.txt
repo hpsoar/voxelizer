@@ -1,7 +1,7 @@
 set(VOXELIZER_TEST_SRC main.cu voxelizer_demo.cu voxelizer_test.cu)
 
-link_directories(${WORK_DIR}/voxelizer/lib
-                 ${WORK_DIR}/axle/lib)
+link_directories(${work_dir}/voxelizer/lib
+                 ${work_dir}/axle/lib)
 
 #LINK_LIBRARIES("-laxle ")
 set(CUDA_NVCC_FLAGS "-arch=sm_20")

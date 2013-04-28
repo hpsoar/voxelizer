@@ -23,30 +23,37 @@ __global__ void KernelCopyResult(const int *input, int n, int *output) {
   if (pidx < n) output[pidx] = input[pidx];
 }
 
-extern "C" void Voxelize(ax::TriMeshPtr mesh, int dim, tVoxels *voxels) {
+extern "C" void Voxelize(ax::TriMeshPtr mesh, int dim[3], tVoxels *voxels) {
+  ax::SeqTimer::Begin("mesh convert...");
   voxel::dVoxelizableMeshPtr dmesh = voxel::ConvertFromTriMesh<kDevice>(mesh);
-  ax::SeqTimer::Begin("hello");
+  ax::SeqTimer::End();
+  ax::SeqTimer::Begin("cuda voxelization");
   voxel::DeviceVoxels vols;
   dmesh->ComputeTriBBox();
   dmesh->ComputeMeshBBox();
   
   RET(vols.Initialize(HVectorFloat(dmesh->bbox0()), 
-                      HVectorFloat(dmesh->bbox1()), 
-                      dim, kUniform));
+                      HVectorFloat(dmesh->bbox1()), dim));
   voxel::Voxelize(thrust::raw_pointer_cast(&dmesh->vertices().front()),
                   thrust::raw_pointer_cast(&dmesh->triangles().front()),
                   dmesh->n_triangles(),
                   thrust::raw_pointer_cast(&dmesh->tri_bbox0().front()),
                   thrust::raw_pointer_cast(&dmesh->tri_bbox1().front()),
                   vols);
+  ax::SeqTimer::End();
+
   cudaMemcpyKind copyKind = (voxels->target == kDevice ? 
       cudaMemcpyDeviceToDevice : cudaMemcpyDeviceToHost);
 
+  ax::SeqTimer::Begin("read back voxels...");
   cudaMemcpy(voxels->data, vols.vols_ptr(), vols.vols().size() * sizeof(int), 
              copyKind);
   cudaMemcpy(voxels->bbox0, vols.bbox0_ptr(), 3 * sizeof(float), copyKind);
   cudaMemcpy(voxels->delta, vols.delta_ptr(), 3 * sizeof(float), copyKind);
-  for (int i = 0; i < 3; ++i) voxels->dim[i] = vols.dim(i);
+  for (int i = 0; i < 3; ++i) {
+    voxels->dim[i] = vols.dim(i);
+    voxels->bbox1[i] = voxels->bbox0[i] + voxels->dim[i] * voxels->delta[i];
+  }
   ax::SeqTimer::End();
 }
 } // voxel

@@ -20,6 +20,6 @@ include_directories(${work_dir}/axle/include
 
 find_package(CUDA REQUIRED)
 
-add_subdirectory(src ${LIB_DIR})
-add_subdirectory(test ${BIN_DIR})
+add_subdirectory(src ${lib_dir})
+add_subdirectory(test ${bin_dir})
 

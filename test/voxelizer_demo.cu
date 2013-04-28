@@ -195,15 +195,16 @@ void VoxelizerDemo::RunTest() {
                   thrust::raw_pointer_cast(&this->hmesh_->tri_bbox1().front()),
                   this->hvoxels_);
 
-  /*ax::SeqTimer::Begin("voxel");
+  ax::SeqTimer::Begin("voxel");
   ::tVoxels tvoxels;
   tvoxels.data = this->dvoxels_.vols_ptr();
   tvoxels.target = voxel::kDevice;
-  ::Voxelize(this->mesh_, dim_, tvoxels);
-  ax::SeqTimer::End();*/
+  int tmp_dim[3] = { 512, 512, 128 };
+  ::Voxelize(this->mesh_, tmp_dim, &tvoxels);
+  ax::SeqTimer::End();
 
  
-  voxel::CheckVoxels(this->dvoxels_.vols(), this->hvoxels_.vols());
+  //voxel::CheckVoxels(this->dvoxels_.vols(), this->hvoxels_.vols());
   const HostVoxels &vols = this->hvoxels_;
   if (voxel_list_) glDeleteLists(voxel_list_, 1);
   voxel_list_ = CreateVoxelDisplayList(HVectorInt(this->hvoxels_.vols()), 
