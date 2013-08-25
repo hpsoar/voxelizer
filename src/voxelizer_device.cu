@@ -3,7 +3,6 @@
 
 #ifdef VOXELIZER_DEVICE
 #include <device_launch_parameters.h>
-#include <cutil_inline.h>
 
 namespace voxel {
 int Voxelize(const float *d_vertices, const int *d_triangles, const int N,
@@ -21,7 +20,7 @@ int Voxelize(const float *d_vertices, const int *d_triangles, const int N,
       ,thrust::raw_pointer_cast(&ttt.front())
 #endif
       );
-  cutilCheckMsg("voxelize_kernel()");
+ 
   cudaError_t cudaStatus;
  /* cudaStatus = cudaDeviceSynchronize();
   if (cudaSuccess != cudaStatus ) {

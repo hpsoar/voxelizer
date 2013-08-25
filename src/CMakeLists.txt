@@ -12,7 +12,7 @@ set(GENCODE_SM20 -gencode=arch=compute_20,code=sm_20 -gencode=arch=compute_20,co
 
 set(target_name "voxelizer")
 
-cuda_add_library(voxelizer ${LIB_TYPE}
+cuda_add_library(${target_name} ${LIB_TYPE}
   ${lib_src} ${lib_inc}
   OPTIONS ${GENCODE_SM13} ${GENCODE_SM20}
   )
